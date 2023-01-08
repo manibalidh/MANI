@@ -1,197 +1,82 @@
-<html lang="en" dir="ltr">
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <style>
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+      body{
+        background-color: black;
+      }
+.heart {
+  background-color: red;
+  display: inline-block;
+  height: 50px;
+  margin: 0 10px;
+  position: relative;
+  top: 0;
+  transform: rotate(-45deg);
+  position: absolute; 
+  left: 45%; top: 45%;
+  width: 50px;
 }
-body{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #5256AD;
+ 
+.heart:before,
+.heart:after {
+  content: "";
+  background-color: red;
+  border-radius: 50%;
+  height: 50px;
+  position: absolute;
+  width: 50px;
 }
-::selection{
-  color: #fff;
-  background: #5256AD;
+ 
+.heart:before {
+  top: -25px;
+  left: 0;
 }
-.wrapper{
-  width: 370px;
-  padding: 25px 30px;
-  border-radius: 7px;
-  background: #fff;
-  box-shadow: 7px 7px 20px rgba(0,0,0,0.05);
+ 
+.heart:after {
+  left: 25px;
+  top: 0;
 }
-.wrapper header{
-  font-size: 28px;
-  font-weight: 500;
-  text-align: center;
-}
-.wrapper form{
-  margin: 35px 0 20px;
-}
-form .row{
-  display: flex;
-  margin-bottom: 20px;
-  flex-direction: column;
-}
-form .row label{
-  font-size: 18px;
-  margin-bottom: 5px;
-}
-form .row:nth-child(2) label{
-  font-size: 17px;
-}
-form :where(textarea, select, button){
-  outline: none;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 5px;
-}
-form .row textarea{
-  resize: none;
-  height: 110px;
-  font-size: 15px;
-  padding: 8px 10px;
-  border: 1px solid #999;
-}
-form .row textarea::-webkit-scrollbar{
-  width: 0px;
-}
-form .row .outer{
-  height: 47px;
-  display: flex;
-  padding: 0 10px;
-  align-items: center;
-  border-radius: 5px;
-  justify-content: center;
-  border: 1px solid #999;
-}
-form .row select{
-  font-size: 14px;
-  background: none;
-}
-form .row select::-webkit-scrollbar{
-  width: 8px;
-}
-form .row select::-webkit-scrollbar-track{
-  background: #fff;
-}
-form .row select::-webkit-scrollbar-thumb{
-  background: #888;
-  border-radius: 8px;
-  border-right: 2px solid #ffffff;
-}
-form button{
-  height: 52px;
-  color: #fff;
-  font-size: 17px;
-  cursor: pointer;
-  margin-top: 10px;
-  background: #675AFE;
-  transition: 0.3s ease;
-}
-form button:hover{
-  background: #4534fe;
-}
-
-@media(max-width: 400px){
-  .wrapper{
-    max-width: 345px;
-    width: 100%;
+@keyframes heartbeat {
+  0% {
+    transform: scale( 1 );    
+  }
+  20% {
+    transform: scale( 1.25 ) 
+      translateX(5%) 
+      translateY(5%);
+  } 
+  40% {
+    transform: scale( 1.5 ) 
+      translateX(9%) 
+      translateY(10%);
   }
 }
-
-
-
-
+.heart {
+  animation: heartbeat 1s infinite; // our heart has infinite heartbeat :)
+  ...
+}
     </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>Text To Speech</header>
-      <form action="#">
-        <div class="row">
-          <label>Enter Text</label>
-          <textarea></textarea>
-        </div>
-        <div class="row">
-          <label>Select Voice</label>
-          <div class="outer">
-            <select></select>
-          </div>
-        </div>
-        <button>Convert To Speech</button>
-      </form>
-    </div>
+    <style>
 
-<script>
-
-
-
-const textarea = document.querySelector("textarea"),
-voiceList = document.querySelector("select"),
-speechBtn = document.querySelector("button");
-
-let synth = speechSynthesis,
-isSpeaking = true;
-
-voices();
-
-function voices(){
-    for(let voice of synth.getVoices()){
-        let selected = voice.name === "Google US English" ? "selected" : "";
-        let option = `<option value="${voice.name}" ${selected}>${voice.name} (${voice.lang})</option>`;
-        voiceList.insertAdjacentHTML("beforeend", option);
-    }
-}
-
-synth.addEventListener("voiceschanged", voices);
-
-function textToSpeech(text){
-    let utterance = new SpeechSynthesisUtterance(text);
-    for(let voice of synth.getVoices()){
-        if(voice.name === voiceList.value){
-            utterance.voice = voice;
-        }
-    }
-    synth.speak(utterance);
-}
-
-speechBtn.addEventListener("click", e =>{
-    e.preventDefault();
-    if(textarea.value !== ""){
-        if(!synth.speaking){
-            textToSpeech(textarea.value);
-        }
-        if(textarea.value.length > 80){
-            setInterval(()=>{
-                if(!synth.speaking && !isSpeaking){
-                    isSpeaking = true;
-                    speechBtn.innerText = "Convert To Speech";
-                }else{
-                }
-            }, 500);
-            if(isSpeaking){
-                synth.resume();
-                isSpeaking = false;
-                speechBtn.innerText = "Pause Speech";
-            }else{
-                synth.pause();
-                isSpeaking = true;
-                speechBtn.innerText = "Resume Speech";
-            }
-        }else{
-            speechBtn.innerText = "Convert To Speech";
-        }
-    }
-});
-</script>
-
-  </body>
+      marquee{
+       font-family:tahoma;
+       width: 100%;
+       padding: 10px 0;
+       background-color: #e70606;
+       color: #fff;
+      font-size: larger;
+      }
+      
+      </style>
+</head>
+<body>
+    <div class="heart"></div>
+    <marquee>i love you my love </marquee>
+    
+</body>
 </html>
