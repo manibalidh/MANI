@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>سایت مانی</title>
+	<title>سایت مانی</title> 
 	<style>header {
         background-color: #333;
         color: #fff;
